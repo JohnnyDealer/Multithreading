@@ -5,16 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WPF_Test"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="556.017" Width="927.482">
     <Grid>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="63,73,0,0" VerticalAlignment="Top" Width="160" Height="64" Click="Button_Click"/>
-        <RichTextBox x:Name="richTextBox" HorizontalAlignment="Left" Height="256" Margin="271,73,0,0" VerticalAlignment="Top" Width="436">
+        <Button x:Name="Parsing" Content="Парсинг" HorizontalAlignment="Left" Margin="38,41,0,0" VerticalAlignment="Top" Width="160" Height="64" Click="Parsing_Click"/>
+        <RichTextBox x:Name="richTextBox" HorizontalAlignment="Left" Height="198" Margin="581,41,0,0" VerticalAlignment="Top" Width="328">
             <FlowDocument>
                 <Paragraph>
                     <Run Text=""/>
                 </Paragraph>
             </FlowDocument>
         </RichTextBox>
+        <Button x:Name="Threads" Content="Запись потоками" HorizontalAlignment="Left" Margin="38,132,0,0" VerticalAlignment="Top" Width="160" Height="66" Click="Threads_Click" IsEnabled="False"/>
 
     </Grid>
 </Window>

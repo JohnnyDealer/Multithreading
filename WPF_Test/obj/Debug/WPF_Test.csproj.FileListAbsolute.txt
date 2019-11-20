@@ -16,3 +16,20 @@ C:\Users\Peter\Documents\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Te
 C:\Users\Peter\Documents\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.csproj.CopyComplete
 C:\Users\Peter\Documents\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.exe
 C:\Users\Peter\Documents\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.pdb
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\bin\Debug\WPF_Test.exe.config
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\bin\Debug\WPF_Test.exe
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\bin\Debug\WPF_Test.pdb
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\bin\Debug\WebDriver.dll
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\bin\Debug\WebDriver.xml
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\MainWindow.g.cs
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\App.g.cs
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test_MarkupCompile.cache
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test_MarkupCompile.lref
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\MainWindow.baml
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.g.resources
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.Properties.Resources.resources
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.csproj.GenerateResource.cache
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.csproj.CopyComplete
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.exe
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.pdb
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.csprojAssemblyReference.cache

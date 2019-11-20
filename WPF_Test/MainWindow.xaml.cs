@@ -26,24 +26,40 @@ namespace WPF_Test
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
+    /// 
+    
     public partial class MainWindow : Window
     {
+        public delegate void Method(int i);
         public MainWindow()
         {
             InitializeComponent();
+            
         }
-        [DataContract]
-        public class Post      //новостной блок
+        
+        private List<string> GetPostLinks(IWebElement element)
         {
-            [DataMember]
-            public string Author { get; set; }
-            [DataMember]
-            public string Text { get; set; }
-            [DataMember]
-            public List<string> MainContent = new List<string>();
-            public static void GetNews(ChromeDriver cd)
+            IWebElement div = element;
+            List<string> links = new List<string>();
+            List<IWebElement> post_text = div.FindElements(By.ClassName("wall_post_text")).ToList();
+            if (post_text.Any())
             {
+                List<IWebElement> post_links = (div.FindElement(By.ClassName("wall_post_text")).FindElements(By.TagName("a"))).ToList();
+                //List<IWebElement> post_links = post_text.FindElements(By.TagName("a")).ToList();
+                foreach (IWebElement link in post_links)
+                {
+
+                    var a = link.GetAttribute("href");
+                    if (a == null)
+                        links.Add("");
+                    else
+                        links.Add(link.GetAttribute("href"));
+                }
+                return links;
+                
             }
+            else
+                return links;
         }
         private void LogIn(string username, string password, ChromeDriver cd)
         {
@@ -99,7 +115,26 @@ namespace WPF_Test
             }
             return pictures;
                        
+        }   
+        private void Write_Info_ToFile(IWebElement element, string path)
+        {
+            List<string> pictures = GetPostMainContent(element);
+            List<string> links = GetPostLinks(element);
+            using (StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default))
+            {
+                sw.WriteLine(GetPostAuthor(element) + " :");
+                sw.WriteLine();
+                sw.WriteLine(GetPostText(element));
+                sw.WriteLine();
+                for (int i = 0; i < links.Count; i++) sw.WriteLine(links[i]);
+                sw.WriteLine();
+                for (int i = 0; i < pictures.Count; i++) sw.WriteLine(pictures[i]);
+                sw.WriteLine();
+                sw.WriteLine("---------------------------------------\n");
+                sw.Close();
+            }
         }
+
         private string GetPostText(IWebElement element)
         {            
             List<IWebElement> post_text_elements = element.FindElements(By.ClassName("wall_post_text")).ToList(); //Находим блок с текстом
@@ -114,54 +149,373 @@ namespace WPF_Test
             }
             else return "";
         }
-        private void Write_Info_ToFile(IWebElement element, string path)
-        {
-            List<string> pictures = GetPostMainContent(element);
-            using (StreamWriter sw = new StreamWriter(path, true, System.Text.Encoding.Default))
-            {
-                sw.WriteLine(GetPostAuthor(element) + " :");
-                sw.WriteLine();
-                sw.WriteLine(GetPostText(element));
-                sw.WriteLine();
-                for (int i = 0; i < pictures.Count; i++) sw.WriteLine(pictures[i]);
-                sw.WriteLine();
-                sw.WriteLine("---------------------------------------\n");
-                sw.Close();
-            }
-        }
         private string GetPostAuthor(IWebElement element)
         {
             return element.FindElement(By.ClassName("author")).Text;
         }
-        private void Button_Click(object sender, RoutedEventArgs e)
+        private string GetPostId(IWebElement element)  //возвращает уникальный ID поста
+        {
+            string str = "";
+            List<IWebElement> post = element.FindElements(By.ClassName("_post")).ToList();
+            if (post.Count > 0)
+                str = post[0].GetAttribute("data-post-id");
+            else str = "";
+            return str;
+        }
+        private bool RepeatLock(string data_post_id)
+        {
+            Post[] posts = PostsContainer.ToArray();
+            foreach (Post post in posts)
+                if (post.Data_Post_Id == data_post_id) return true;
+            return false;
+        }
+        private void Parsing_Click(object sender, RoutedEventArgs e)
         {
             string WriteFilePath = @"output.txt";
             ChromeDriver chromeDriver = new ChromeDriver();
-            chromeDriver.Navigate().GoToUrl("https://vk.com/feed"); 
-            LogIn("79852981725", "Dealer4465", chromeDriver); //регистрация vk.com            
-            Thread.Sleep(1000);
-            var posts = (from item in chromeDriver.FindElementsByClassName("feed_row") where item.Displayed select item).ToList(); //новостные блоки
-            Queue<Post> Posts = new Queue<Post>();
-            foreach (IWebElement post in posts)
+            chromeDriver.Navigate().GoToUrl("https://vk.com/feed");
+            string login;
+            string password;
+            using (StreamReader sw = new StreamReader("login.txt"))
             {
-                if (post.Text == "") continue;    //Если новость "существует", бывает пустой блок, а это от него защита
-                else
+                login = sw.ReadLine();
+                password = sw.ReadLine();
+                sw.Close();
+            }            
+            LogIn(login, password, chromeDriver); //регистрация vk.com      
+            while(Semaphore.iterator != 5)  //АЛГОРИТМ ПЛАНИРОВАНИЯ ПОТОКОВ И РЕСУРСОВ         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            {
+                Thread.Sleep(5000);
+                var posts = (from item in chromeDriver.FindElementsByClassName("feed_row") where item.Displayed select item).ToList(); //новостные блоки            
+                foreach (IWebElement post in posts)
                 {
-                    if (AdLock(post, "post_date")) continue;  //Если это рекламные пост или пост с возвожными друзьями, то мы его пропускаем
+                    if (post.Text == "") continue;    //Если новость "существует", бывает пустой блок, а это от него защита
                     else
                     {
-                        Post p = new Post() {Author = GetPostAuthor(post), Text = GetPostText(post), MainContent = GetPostMainContent(post)};
-                        Posts.Enqueue(p);
-                        Write_Info_ToFile(post, WriteFilePath);
+                        if (AdLock(post, "post_date")) continue;  //Если это рекламные пост или пост с возвожными друзьями, то мы его пропускаем
+                        else
+                        {
+                            if (RepeatLock(GetPostId(post)))
+                                continue;
+                            else
+                            {
+                                Post p = new Post()
+                                {
+                                    Author = GetPostAuthor(post),
+                                    Text = GetPostText(post),
+                                    Links = GetPostLinks(post),
+                                    MainContent = GetPostMainContent(post),
+                                    Data_Post_Id = GetPostId(post)
+                                };
+                                PostsContainer.Add(p);
+                            }
+                            Write_Info_ToFile(post, WriteFilePath);
+                        }
                     }
                 }
-            }
-            DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(Post[]));
-            using (FileStream fs = new FileStream("posts.json", FileMode.OpenOrCreate))
-            {
-                Post[] PostToSerialize = Posts.ToArray();
-                jsonFormatter.WriteObject(fs, PostToSerialize);
-            }
+                //MessageBox.Show("Парсинг завершён!", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
+                int[] captions = new int[Semaphore.table.GetUpperBound(1) + 1]; //Определем количество элементов в строке данного table[iterator][];
+                for (int j = 0; j < captions.Length; j++)
+                    captions[j] = Semaphore.table[Semaphore.iterator, j];
+                Thread T1 = new Thread(() => { });
+                Thread T2 = new Thread(() => { }); 
+                Thread T3 = new Thread(() => { });
+                Thread T4 = new Thread(() => { });
+                for(int i = 0; i < captions.Length; i++)
+                {
+                    switch (captions[i])
+                    {
+                        case 1:
+                            T1 = new Thread(() => JSON_Write(captions[i]));
+                            T1.Start();
+                           // T1.Join();
+                            break;     
+                        case 2:
+                            T2 = new Thread(() => JSON_Write(captions[i]));
+                            T2.Start();
+                            //T2.Join();
+                            break;
+                        case 3:
+                            T3 = new Thread(() => JSON_Write(captions[i]));
+                            T3.Start();
+                          //  T3.Join();
+                            //Thread.Sleep(100);
+                            break;                                                   
+                        case 4:
+                            T4 = new Thread(() => JSON_Read(i + 1));  //Если читаем файл, то читаем i+1 (то есть важна позиция T4 в таблице);
+                            T4.Start();
+                           // T4.Join();
+                            break;
+                    }
+                    while (T1.IsAlive || T2.IsAlive || T3.IsAlive || T4.IsAlive) 
+                    { }
+                }
+                //T1.Start();
+                //T2.Start();
+                //T3.Start();
+                //T4.Start();
+                bool[] readiness = new bool[] {true, true, true, true};
+                while(readiness.Contains(true))
+                {
+                    if (T1.IsAlive) continue;
+                    else readiness[0] = false;
+                    if (T2.IsAlive) continue;
+                    else readiness[1] = false;
+                    if (T3.IsAlive) continue;
+                    else readiness[2] = false;
+                    if (T4.IsAlive) continue;
+                    else readiness[3] = false;
+                }
+                //Потоки завершили работу;
+                Semaphore.iterator++;
+                chromeDriver.Navigate().Refresh();
+            }                              
         }
+        private void Nothing(int i)
+        {
+
+        }
+        private void JSON_Write(int file_number)
+        {
+            
+            Post[] PostsToSerialize = PostsContainer.ToArray();
+            int _size = PostsToSerialize.Length;
+            Authors[] auth = new Authors[_size];
+            Texts[] text = new Texts[_size];
+            Link[] links = new Link[_size];
+            PicVids[] pv = new PicVids[_size];
+            for (int i = 0; i < _size; i++)
+            {
+                auth[i] = new Authors() { Author = PostsToSerialize[i].Author, Data_Post_Id = PostsToSerialize[i].Data_Post_Id };
+                text[i] = new Texts() { Text = PostsToSerialize[i].Text, Data_Post_Id = PostsToSerialize[i].Data_Post_Id};
+                links[i] = new Link() { Links = PostsToSerialize[i].Links, Data_Post_Id = PostsToSerialize[i].Data_Post_Id };
+                pv[i] = new PicVids() { MainContent = PostsToSerialize[i].MainContent, Data_Post_Id = PostsToSerialize[i].Data_Post_Id };
+            }
+            //using (FileStream fs = new FileStream("posts" + file_number.ToString() + ".json", FileMode.Append, FileAccess.Write))
+            using (FileStream fs = new FileStream("T:\\post" + file_number.ToString() + ".json", FileMode.OpenOrCreate))
+            {
+                switch (file_number)
+                {
+                    
+                    case 1:
+                        {
+                            DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(Texts[]));
+                            jsonFormatter.WriteObject(fs, text);
+                            break;
+                        }
+
+                    case 2:
+                        {
+                            DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(Link[]));
+                            jsonFormatter.WriteObject(fs, links);
+                            break;
+                        }
+
+                    case 3:
+                        {
+                            DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(PicVids[]));
+                            jsonFormatter.WriteObject(fs, pv);
+                            break;
+                        }
+                    
+                    case 4:
+                        {
+                            DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(Authors[]));
+                            jsonFormatter.WriteObject(fs, auth);
+                            break;
+                        }
+                }
+            }
+          //  MessageBox.Show("Поток записи в файл " + file_number.ToString() + " отработал!");
+        }
+        private void JSON_Read(int file_number)
+        {           
+            using (FileStream fs = new FileStream("T:\\post" + file_number.ToString() + ".json", FileMode.OpenOrCreate))
+            {
+                switch (file_number)
+                {
+                    case 1:
+                        {
+                            DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(Texts[]));
+                            Texts[] text = (Texts[])jsonFormatter.ReadObject(fs);
+                            using (StreamWriter sw = new StreamWriter("T:\\output" + file_number + ".txt", false, System.Text.Encoding.Default))
+                            {
+                                for (int i = 0; i < text.Length; i++)
+                                {
+                                    sw.WriteLine(text[i].Text);
+                                    sw.WriteLine(text[i].Data_Post_Id);
+                                    sw.WriteLine("------------------------------");
+                                    sw.WriteLine();
+                                }
+                                sw.Close();
+                            }
+                            break;
+                        }
+
+                    case 2:
+                        {
+                            DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(Link[]));
+                            Link[] links = (Link[])jsonFormatter.ReadObject(fs);
+                            using (StreamWriter sw = new StreamWriter("T:\\output" + file_number + ".txt", false, System.Text.Encoding.Default))
+                            {
+                                for (int i = 0; i < links.Length; i++)
+                                {
+                                    for (int j = 0; j < links[i].Links.Count; j++)
+                                        sw.WriteLine(links[i].Links[j]);
+                                    sw.WriteLine(links[i].Data_Post_Id);
+                                    sw.WriteLine("------------------------------");
+                                    sw.WriteLine();
+                                }
+                                sw.Close();
+                            }
+                            break;
+                        }
+
+                    case 3:
+                        {
+                            DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(PicVids[]));
+                            PicVids[] pv = (PicVids[])jsonFormatter.ReadObject(fs);
+                            using (StreamWriter sw = new StreamWriter("T:\\output" + file_number + ".txt", false, System.Text.Encoding.Default))
+                            {
+                                for (int i = 0; i < pv.Length; i++)
+                                {
+                                    for(int j =0; j < pv[i].MainContent.Count; j++)
+                                        sw.WriteLine(pv[i].MainContent[j]);       
+                                    sw.WriteLine(pv[i].Data_Post_Id);
+                                    sw.WriteLine("------------------------------");
+                                    sw.WriteLine();
+                                }
+                                sw.Close();
+                            }
+                            break;
+                        }
+                    
+                    case 4:
+                        {
+                            DataContractJsonSerializer jsonFormatter = new DataContractJsonSerializer(typeof(Authors[]));
+                            Authors[] auth = (Authors[])jsonFormatter.ReadObject(fs);
+                            using (StreamWriter sw = new StreamWriter("T:\\output" + file_number + ".txt", false, System.Text.Encoding.Default))
+                            {
+                                for (int i = 0; i < auth.Length; i++)
+                                {
+                                    sw.WriteLine(auth[i].Author);
+                                    sw.WriteLine(auth[i].Data_Post_Id);
+                                    sw.WriteLine("------------------------------");
+                                    sw.WriteLine();
+                                }
+                                sw.Close();
+                            }
+                            break;
+                        }
+                }
+            }
+            
+            //MessageBox.Show("Поток чтения " + file_number.ToString() + " отработал!");
+        }
+        private void Thread_Ready(Thread T)
+        {
+            bool ready = true;
+            while(T.IsAlive)
+            {
+                ready = false;
+            }
+            ready = true;
+        }
+        private void Threads_Click(object sender, RoutedEventArgs e)
+        {
+            Thread T1 = new Thread(() => JSON_Write(1));                  
+            Thread T2 = new Thread(() => JSON_Write(2));            
+            Thread T3 = new Thread(() => JSON_Write(3));           
+            Thread T4 = new Thread(() => JSON_Read(1));
+            bool flag = true; bool ready = false;
+            string[] readiness = new string[4];
+            while (flag)
+            {
+                if (readiness[0] != "Поток 1 запущен")
+                {
+                    T1.Start();
+                    readiness[0] = "Поток 1 запущен";
+                    continue;
+                }
+                if (T1.IsAlive == true)
+                {
+                    T1.Join();
+                    T4.Start();
+                    continue;
+                }
+                else
+                {
+
+                    if (readiness[1] != "Поток 2 запущен")
+                    {
+                        T2.Start();
+                        readiness[1] = "Поток 2 запущен";
+                        continue;
+                    }
+                    if (T2.IsAlive || T4.IsAlive)
+                        continue;
+                    else  //Когда записался 2 файл и прочитался 1
+                    {
+                        if (readiness[2] != "Поток 3 запущен")
+                        {
+                            (T4 = new Thread(() => JSON_Read(2))).Start();  //Читает 2 файл  
+                            T3.Start();
+                            readiness[2] = "Поток 3 запущен";
+                            readiness[3] = "Поток 4 запущен";
+                            continue;
+                        }
+                        if (T3.IsAlive || T4.IsAlive)
+                            continue;
+                        else  //Когда записался 3 файл и прочитался 2 файл
+                        {
+                            if (readiness[3] == "Поток 4 запущен")
+                            {
+                                (T4 = new Thread(() => JSON_Read(3))).Start();  //Читает 3 файл
+                                readiness[3] = "Поток 4 отработал";
+                            }
+                            if (T4.IsAlive)
+                                continue;
+                            else
+                                flag = false;
+                        }
+                    }
+                }
+            }         //1 Вариант
+            //string[] captions = new string[3];
+            //int count = 0;
+            //while (!ready)
+            //{
+            //    for (int i = 0; i < captions.Length; i++)
+            //    {
+            //        if (captions[i] == "Ready" && !T4.IsAlive)
+            //        {
+            //            T4 = new Thread(() => JSON_Read(i));
+            //            captions[i] = "Finished";
+            //        }
+            //    }
+            //    if (T1.IsAlive)
+            //        captions[0] = "Not ready";
+            //    else
+            //        captions[0] = "Ready";
+            //    if (T2.IsAlive)
+            //        captions[1] = "Not ready";
+            //    else
+            //        captions[1] = "Ready";
+            //    if (T3.IsAlive)
+            //        captions[2] = "Not ready";
+            //    else
+            //        captions[2] = "Ready";
+            //    for (int i = 0; i < captions.Length; i++)
+            //    {
+            //        if (captions[i] == "Finished")
+            //        {
+            //            captions[i] = "Exit";
+            //            count++;
+            //        }
+            //    }
+            //    if (count == 3) ready = true;
+            //}
+        }
+        
     }
 }
