@@ -32,4 +32,3 @@ T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\o
 T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.csproj.CopyComplete
 T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.exe
 T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.pdb
-T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\WPF_Test\obj\Debug\WPF_Test.csprojAssemblyReference.cache

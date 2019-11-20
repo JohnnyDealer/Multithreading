@@ -181,11 +181,11 @@ namespace WPF_Test
                 login = sw.ReadLine();
                 password = sw.ReadLine();
                 sw.Close();
-            }            
+            }
             LogIn(login, password, chromeDriver); //регистрация vk.com      
-            while(Semaphore.iterator != 5)  //АЛГОРИТМ ПЛАНИРОВАНИЯ ПОТОКОВ И РЕСУРСОВ         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            while (Semaphore.iterator != 5)  //АЛГОРИТМ ПЛАНИРОВАНИЯ ПОТОКОВ И РЕСУРСОВ         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             {
-                Thread.Sleep(5000);
+                Thread.Sleep(3000);
                 var posts = (from item in chromeDriver.FindElementsByClassName("feed_row") where item.Displayed select item).ToList(); //новостные блоки            
                 foreach (IWebElement post in posts)
                 {
@@ -213,67 +213,70 @@ namespace WPF_Test
                         }
                     }
                 }
-                //MessageBox.Show("Парсинг завершён!", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
+                
+                List<int> file_numbers = new List<int>();
                 int[] captions = new int[Semaphore.table.GetUpperBound(1) + 1]; //Определем количество элементов в строке данного table[iterator][];
                 for (int j = 0; j < captions.Length; j++)
-                    captions[j] = Semaphore.table[Semaphore.iterator, j];
-                Thread T1 = new Thread(() => { });
-                Thread T2 = new Thread(() => { }); 
-                Thread T3 = new Thread(() => { });
-                Thread T4 = new Thread(() => { });
-                for(int i = 0; i < captions.Length; i++)
+                    captions[j] = Semaphore.table[Semaphore.iterator, j];                
+                Thread T1 = new Thread(() => { }); T1.Name = "T1";
+                Thread T2 = new Thread(() => { }); T2.Name = "T2";
+                Thread T3 = new Thread(() => { }); T3.Name = "T3";
+                Thread T4 = new Thread(() => { }); T4.Name = "T4";
+                for (int i = 0; i < captions.Length; i++)
                 {
+                    //В каждом case создаём переменные int для каждого случая, потому что потоки будут обращаться к аргументам фаункций JSON_Read/Write
+                //только в конце цикла for (не знаю почему), а так в памяти сразу записывается новая ячейка и ошибок не возникает.
+                //Так же это решило проблему со счётчиком i = 3 и позволило вынести while за цикл, что гарантирует параллельность работы потоков.
                     switch (captions[i])
                     {
                         case 1:
-                            T1 = new Thread(() => JSON_Write(captions[i]));
+                            int first = captions[i];
+                            T1 = new Thread(() => JSON_Write(first));
                             T1.Start();
-                           // T1.Join();
-                            break;     
+                            break;
                         case 2:
-                            T2 = new Thread(() => JSON_Write(captions[i]));
+                            int second = captions[i];
+                            T2 = new Thread(() => JSON_Write(second));
                             T2.Start();
-                            //T2.Join();
                             break;
                         case 3:
-                            T3 = new Thread(() => JSON_Write(captions[i]));
+                            int third = captions[i];
+                            T3 = new Thread(() => JSON_Write(third));
                             T3.Start();
-                          //  T3.Join();
-                            //Thread.Sleep(100);
-                            break;                                                   
+                            break;
                         case 4:
-                            T4 = new Thread(() => JSON_Read(i + 1));  //Если читаем файл, то читаем i+1 (то есть важна позиция T4 в таблице);
+                            int fourth = i;
+                            T4 = new Thread(() => JSON_Read(fourth + 1));  //Если читаем файл, то читаем i+1 (то есть важна позиция T4 в таблице);
                             T4.Start();
-                           // T4.Join();
                             break;
                     }
-                    while (T1.IsAlive || T2.IsAlive || T3.IsAlive || T4.IsAlive) 
-                    { }
+                    //if (i == captions.Length - 1)                    
+                    //    while (T1.IsAlive || T2.IsAlive || T3.IsAlive || T4.IsAlive)
+                    //    { }
                 }
+                while (T1.IsAlive || T2.IsAlive || T3.IsAlive || T4.IsAlive)
+                { }
                 //T1.Start();
                 //T2.Start();
                 //T3.Start();
                 //T4.Start();
-                bool[] readiness = new bool[] {true, true, true, true};
-                while(readiness.Contains(true))
-                {
-                    if (T1.IsAlive) continue;
-                    else readiness[0] = false;
-                    if (T2.IsAlive) continue;
-                    else readiness[1] = false;
-                    if (T3.IsAlive) continue;
-                    else readiness[2] = false;
-                    if (T4.IsAlive) continue;
-                    else readiness[3] = false;
-                }
+                //bool[] readiness = new bool[] { true, true, true, true };
+                //while (readiness.Contains(true))
+                //{
+                //    if (T1.IsAlive) continue;
+                //    else readiness[0] = false;
+                //    if (T2.IsAlive) continue;
+                //    else readiness[1] = false;
+                //    if (T3.IsAlive) continue;
+                //    else readiness[2] = false;
+                //    if (T4.IsAlive) continue;
+                //    else readiness[3] = false;
+                //}
                 //Потоки завершили работу;
                 Semaphore.iterator++;
                 chromeDriver.Navigate().Refresh();
-            }                              
-        }
-        private void Nothing(int i)
-        {
-
+            }
+            MessageBox.Show("Программа звершила сеанс работы!", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         private void JSON_Write(int file_number)
         {
@@ -325,6 +328,7 @@ namespace WPF_Test
                             break;
                         }
                 }
+                                
             }
           //  MessageBox.Show("Поток записи в файл " + file_number.ToString() + " отработал!");
         }
@@ -412,15 +416,7 @@ namespace WPF_Test
             
             //MessageBox.Show("Поток чтения " + file_number.ToString() + " отработал!");
         }
-        private void Thread_Ready(Thread T)
-        {
-            bool ready = true;
-            while(T.IsAlive)
-            {
-                ready = false;
-            }
-            ready = true;
-        }
+
         private void Threads_Click(object sender, RoutedEventArgs e)
         {
             Thread T1 = new Thread(() => JSON_Write(1));                  
