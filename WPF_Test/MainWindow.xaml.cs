@@ -183,7 +183,8 @@ namespace WPF_Test
                 sw.Close();
             }
             LogIn(login, password, chromeDriver); //регистрация vk.com      
-            while (Semaphore.iterator != 5)  //АЛГОРИТМ ПЛАНИРОВАНИЯ ПОТОКОВ И РЕСУРСОВ         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+            Thread.Sleep(5000);
+            while (Semaphore.iterator != Semaphore.iterations)  //АЛГОРИТМ ПЛАНИРОВАНИЯ ПОТОКОВ И РЕСУРСОВ         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             {
                 Thread.Sleep(3000);
                 var posts = (from item in chromeDriver.FindElementsByClassName("feed_row") where item.Displayed select item).ToList(); //новостные блоки            
@@ -213,8 +214,6 @@ namespace WPF_Test
                         }
                     }
                 }
-                
-                List<int> file_numbers = new List<int>();
                 int[] captions = new int[Semaphore.table.GetUpperBound(1) + 1]; //Определем количество элементов в строке данного table[iterator][];
                 for (int j = 0; j < captions.Length; j++)
                     captions[j] = Semaphore.table[Semaphore.iterator, j];                
@@ -222,6 +221,15 @@ namespace WPF_Test
                 Thread T2 = new Thread(() => { }); T2.Name = "T2";
                 Thread T3 = new Thread(() => { }); T3.Name = "T3";
                 Thread T4 = new Thread(() => { }); T4.Name = "T4";
+                string CanWork = "";
+                while(CanWork != "1")
+                {
+                    using (StreamReader sr = new StreamReader(@"T:\Process.txt"))
+                        CanWork = sr.ReadLine();
+                    if (CanWork != "1")
+                        Thread.Sleep(5000);
+                }
+                
                 for (int i = 0; i < captions.Length; i++)
                 {
                     //В каждом case создаём переменные int для каждого случая, потому что потоки будут обращаться к аргументам фаункций JSON_Read/Write
@@ -250,33 +258,18 @@ namespace WPF_Test
                             T4.Start();
                             break;
                     }
-                    //if (i == captions.Length - 1)                    
-                    //    while (T1.IsAlive || T2.IsAlive || T3.IsAlive || T4.IsAlive)
-                    //    { }
+                   
                 }
                 while (T1.IsAlive || T2.IsAlive || T3.IsAlive || T4.IsAlive)
                 { }
-                //T1.Start();
-                //T2.Start();
-                //T3.Start();
-                //T4.Start();
-                //bool[] readiness = new bool[] { true, true, true, true };
-                //while (readiness.Contains(true))
-                //{
-                //    if (T1.IsAlive) continue;
-                //    else readiness[0] = false;
-                //    if (T2.IsAlive) continue;
-                //    else readiness[1] = false;
-                //    if (T3.IsAlive) continue;
-                //    else readiness[2] = false;
-                //    if (T4.IsAlive) continue;
-                //    else readiness[3] = false;
-                //}
-                //Потоки завершили работу;
+                using (StreamWriter sw = new StreamWriter(@"T:\Process.txt", false))
+                    sw.WriteLine(2);
                 Semaphore.iterator++;
                 chromeDriver.Navigate().Refresh();
             }
-            MessageBox.Show("Программа звершила сеанс работы!", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
+            MessageBox.Show("Программа завершила сеанс работы!", "Уведомление", MessageBoxButton.OK, MessageBoxImage.Information);
+            using (StreamWriter sw = new StreamWriter(@"T:\Process.txt", false))
+                sw.WriteLine(2);
         }
         private void JSON_Write(int file_number)
         {
@@ -423,7 +416,7 @@ namespace WPF_Test
             Thread T2 = new Thread(() => JSON_Write(2));            
             Thread T3 = new Thread(() => JSON_Write(3));           
             Thread T4 = new Thread(() => JSON_Read(1));
-            bool flag = true; bool ready = false;
+            bool flag = true;
             string[] readiness = new string[4];
             while (flag)
             {
@@ -477,40 +470,7 @@ namespace WPF_Test
                     }
                 }
             }         //1 Вариант
-            //string[] captions = new string[3];
-            //int count = 0;
-            //while (!ready)
-            //{
-            //    for (int i = 0; i < captions.Length; i++)
-            //    {
-            //        if (captions[i] == "Ready" && !T4.IsAlive)
-            //        {
-            //            T4 = new Thread(() => JSON_Read(i));
-            //            captions[i] = "Finished";
-            //        }
-            //    }
-            //    if (T1.IsAlive)
-            //        captions[0] = "Not ready";
-            //    else
-            //        captions[0] = "Ready";
-            //    if (T2.IsAlive)
-            //        captions[1] = "Not ready";
-            //    else
-            //        captions[1] = "Ready";
-            //    if (T3.IsAlive)
-            //        captions[2] = "Not ready";
-            //    else
-            //        captions[2] = "Ready";
-            //    for (int i = 0; i < captions.Length; i++)
-            //    {
-            //        if (captions[i] == "Finished")
-            //        {
-            //            captions[i] = "Exit";
-            //            count++;
-            //        }
-            //    }
-            //    if (count == 3) ready = true;
-            //}
+            
         }
         
     }
