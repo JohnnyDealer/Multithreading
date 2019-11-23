@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="Хранилище MyNewDatabaseModelContainer" CdmEntityContainer="MyNewDatabaseTables">
+    <EntitySetMapping Name="TableLinks">
+      <EntityTypeMapping TypeName="MyNewDatabaseModel.TableLinks">
+        <MappingFragment StoreEntitySet="TableLinks">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Links" ColumnName="Links" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TableMedia">
+      <EntityTypeMapping TypeName="MyNewDatabaseModel.TableMedia">
+        <MappingFragment StoreEntitySet="TableMedia">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Media" ColumnName="Media" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TableText">
+      <EntityTypeMapping TypeName="MyNewDatabaseModel.TableText">
+        <MappingFragment StoreEntitySet="TableText">
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="Text" ColumnName="Text" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>

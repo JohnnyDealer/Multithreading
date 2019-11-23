@@ -1,0 +1,35 @@
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\MyNewDatabase.mdf
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\MyNewDatabase_log.ldf
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\MyNewService.exe.config
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\MyNewService.exe
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\MyNewService.pdb
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\EntityFramework.dll
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\EntityFramework.SqlServer.dll
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\EntityFramework.xml
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\EntityFramework.SqlServer.xml
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\ru\EntityFramework.resources.dll
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\ru\EntityFramework.SqlServer.resources.dll
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\obj\Debug\MyNewService.S.resources
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\obj\Debug\MyNewService.ProjectInstaller.resources
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\obj\Debug\MyNewService.csproj.GenerateResource.cache
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\obj\Debug\MyNewService.csproj.CopyComplete
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\obj\Debug\MyNewService.exe
+T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\obj\Debug\MyNewService.pdb
+T:\MyNewService\bin\Debug\MyNewDatabase.mdf
+T:\MyNewService\bin\Debug\MyNewDatabase_log.ldf
+T:\MyNewService\bin\Debug\MyNewService.exe.config
+T:\MyNewService\bin\Debug\MyNewService.exe
+T:\MyNewService\bin\Debug\MyNewService.pdb
+T:\MyNewService\bin\Debug\EntityFramework.dll
+T:\MyNewService\bin\Debug\EntityFramework.SqlServer.dll
+T:\MyNewService\bin\Debug\EntityFramework.xml
+T:\MyNewService\bin\Debug\EntityFramework.SqlServer.xml
+T:\MyNewService\bin\Debug\ru\EntityFramework.resources.dll
+T:\MyNewService\bin\Debug\ru\EntityFramework.SqlServer.resources.dll
+T:\MyNewService\obj\Debug\MyNewService.S.resources
+T:\MyNewService\obj\Debug\MyNewService.ProjectInstaller.resources
+T:\MyNewService\obj\Debug\MyNewService.csproj.GenerateResource.cache
+T:\MyNewService\obj\Debug\MyNewService.csproj.CopyComplete
+T:\MyNewService\obj\Debug\MyNewService.exe
+T:\MyNewService\obj\Debug\MyNewService.pdb
+T:\MyNewService\obj\Debug\MyNewService.csprojAssemblyReference.cache

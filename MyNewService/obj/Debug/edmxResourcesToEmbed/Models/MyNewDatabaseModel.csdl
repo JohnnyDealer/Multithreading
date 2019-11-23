@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="MyNewDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Table">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="Author" Type="String" FixedLength="true" Unicode="true" Nullable="true" MaxLength="40" />
+    <Property Name="Text" Type="String" FixedLength="false" Unicode="true" Nullable="true" MaxLength="Max" />
+    <Property Name="Media" Type="String" FixedLength="false" Unicode="true" Nullable="true" MaxLength="Max" />
+    <Property Name="Data_Post_ID" Type="String" FixedLength="false" Unicode="true" Nullable="true" MaxLength="Max" />
+    <Property Name="Links" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityContainer Name="MyNewDatabaseEntities1" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Table" EntityType="Self.Table" />
+  </EntityContainer>
+</Schema>

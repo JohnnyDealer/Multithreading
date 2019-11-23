@@ -1,0 +1,39 @@
+﻿Выполняется установка сборки 'T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\MyNewService.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   logfile = T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\MyNewService.InstallLog
+   assemblypath = T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\MyNewService.exe
+Устанавливается служба MyNewService...
+Служба MyNewService успешно установлена.
+Создается исходный EventLog MyNewService в журнале Application...
+Выполняется фиксация сборки 'T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\MyNewService.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   logfile = T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\MyNewService.InstallLog
+   assemblypath = T:\Users\Petr\Мои документы\Visual Studio 2019\ProjectsC#\MyNewService\bin\Debug\MyNewService.exe
+Выполняется установка сборки 'T:\MyNewService\bin\Debug\MyNewService.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   logfile = T:\MyNewService\bin\Debug\MyNewService.InstallLog
+   assemblypath = T:\MyNewService\bin\Debug\MyNewService.exe
+Устанавливается служба MyNewService...
+Создается исходный EventLog MyNewService в журнале Application...
+Выполняется откат для сборки 'T:\MyNewService\bin\Debug\MyNewService.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   logfile = T:\MyNewService\bin\Debug\MyNewService.InstallLog
+   assemblypath = T:\MyNewService\bin\Debug\MyNewService.exe
+Восстанавливается исходное состояние журнала событий для источника MyNewService.
+Выполняется установка сборки 'T:\MyNewService\bin\Debug\MyNewService.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   logfile = T:\MyNewService\bin\Debug\MyNewService.InstallLog
+   assemblypath = T:\MyNewService\bin\Debug\MyNewService.exe
+Устанавливается служба MyReadyService...
+Служба MyReadyService успешно установлена.
+Создается исходный EventLog MyReadyService в журнале Application...
+Выполняется фиксация сборки 'T:\MyNewService\bin\Debug\MyNewService.exe'.
+Затронуты следующие параметры:
+   logtoconsole = 
+   logfile = T:\MyNewService\bin\Debug\MyNewService.InstallLog
+   assemblypath = T:\MyNewService\bin\Debug\MyNewService.exe
